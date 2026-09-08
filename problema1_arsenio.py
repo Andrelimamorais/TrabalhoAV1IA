@@ -1,24 +1,15 @@
-"""
-Universidade de Fortaleza - UNIFOR
-Disciplina: Inteligência Artificial Computacional
-Problema 1 - Arsênio em unhas do pé (regressão linear múltipla)
-Implementação 100% manual com numpy (sem sklearn, sem pandas) - padrão da aula
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-# ==================== LEITURA DOS DADOS (np.loadtxt, padrão aula) ====================
-# Idade, Sexo, Uso_Beber, Uso_Cozinhar, Arsenio_Agua, Arsenio_Unhas
 dados = np.loadtxt("arsenio_dataset (1).csv", delimiter=",", skiprows=1)
 print("Dados de entrada:\n", dados)
 
-X = dados[:, [0, 2, 3, 4]]   # Idade, Uso_Beber, Uso_Cozinhar, Arsenio_Agua
-y = dados[:, 5]              # Arsenio_Unhas
+X = dados[:, [0, 2, 3, 4]]   
+y = dados[:, 5]              
 N = X.shape[0]
 print("Quantidade de observações:", N)
 
-# ==================== CLASSES (PADRÃO DA AULA) ====================
 class MRegression:
     """Regressão Linear Múltipla via pseudo-inversa de Moore-Penrose"""
     def __init__(self, X, y, intercepto=True):
@@ -61,7 +52,6 @@ class LinearRegression:
         print(f"Intercepto = {self.b0}")
         print(f"Coeficiente Angular = {self.b1}")
 
-# ==================== MÉTRICAS ====================
 def r2_score(y_true, y_pred):
     numerador = np.sum((y_true - y_pred) ** 2)
     denominador = np.sum((y_true - np.mean(y_true)) ** 2)
@@ -81,7 +71,6 @@ def rmse(y_true, y_pred):
 def mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
 
-# ==================== (a) MODELO COMPLETO ====================
 modelo = MRegression(X, y)
 modelo.fit()
 nomes = ['Intercepto', 'Idade', 'Uso_Beber', 'Uso_Cozinhar', 'Arsenio_Agua']
@@ -89,21 +78,17 @@ print("\n(a) COEFICIENTES DO MODELO COMPLETO:")
 for nome, b in zip(nomes, modelo.beta):
     print(f"  {nome:15s} = {b:.6f}")
 
-# ==================== (b) PREVISÃO ====================
 x_novo = np.array([[30, 5, 5, 0.135]])
 print("\n(b) Previsão (idade=30, beber=5, cozinhar=5, As água=0.135):",
       modelo.predict(x_novo)[0], "ppm")
 
 y_pred = modelo.predict(X)
 
-# ==================== (d) R² ====================
 print("\n(d) R² =", r2_score(y, y_pred))
 
-# ==================== (e) R² AJUSTADO ====================
 print("(e) R² ajustado =", r2_ajustado(y, y_pred, p=4))
 
-# ==================== (f) MODELO ALTERNATIVO (só arsênio na água) ====================
-modelo_alt = LinearRegression(X[:, 3], y)   # Arsenio_Agua é a coluna 3 de X
+modelo_alt = LinearRegression(X[:, 3], y)   
 modelo_alt.fit()
 y_pred_alt = modelo_alt.predict(X[:, 3])
 print("\n(f) MODELO ALTERNATIVO (só Arsênio na água):")
@@ -111,7 +96,6 @@ modelo_alt.summary()
 print("  R² =", r2_score(y, y_pred_alt))
 print("  R² ajustado =", r2_ajustado(y, y_pred_alt, p=1))
 
-# ------- Análise de resíduos: tabela y, ŷ, e (sem pandas) -------
 residuos = y - y_pred
 print("\nTABELA DE RESÍDUOS:")
 print(f"  {'Obs i':>6s} {'y observado':>12s} {'ŷ ajustado':>12s} {'e resíduo':>12s}")
@@ -119,12 +103,10 @@ print("  " + "-" * 44)
 for i in range(N):
     print(f"  {i+1:6d} {y[i]:12.6f} {y_pred[i]:12.6f} {residuos[i]:12.6f}")
 
-# salva a tabela em CSV sem pandas
 tabela = np.column_stack((np.arange(1, N+1), y, y_pred, residuos))
 np.savetxt("tabela_residuos_problema1.csv", tabela, delimiter=",",
            header="Observacao,y_observado,y_ajustado,residuo", comments="", fmt="%.6f")
 
-# ==================== (g) INTERCEPTO ZERO ====================
 modelo_zero = MRegression(X, y, intercepto=False)
 modelo_zero.fit()
 y_pred_zero = modelo_zero.predict(X)
@@ -133,13 +115,11 @@ print("  Coeficientes:", modelo_zero.beta)
 print("  R² =", r2_score(y, y_pred_zero), " RMSE =", rmse(y, y_pred_zero))
 print("  Modelo c/ intercepto: R² =", r2_score(y, y_pred), " RMSE =", rmse(y, y_pred))
 
-# ==================== (h) MÉTRICAS DE ERRO ====================
 print("\n(h) COMPARAÇÃO DE MÉTRICAS:")
 print(f"  {'Métrica':10s} {'Completo':>12s} {'Alt (água)':>12s}")
 for nome_m, f in [('MSE', mse), ('RMSE', rmse), ('MAE', mae)]:
     print(f"  {nome_m:10s} {f(y, y_pred):12.6f} {f(y, y_pred_alt):12.6f}")
 
-# ==================== GRÁFICOS DE RESÍDUOS ====================
 fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 axes[0].scatter(y_pred, residuos, color='steelblue', edgecolor='k')
 axes[0].axhline(0, color='red', linestyle='--')
