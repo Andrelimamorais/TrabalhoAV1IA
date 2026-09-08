@@ -11,7 +11,6 @@ N = X.shape[0]
 print("Quantidade de observações:", N)
 
 class MRegression:
-    """Regressão Linear Múltipla via pseudo-inversa de Moore-Penrose"""
     def __init__(self, X, y, intercepto=True):
         self.X = X
         self.y = y
@@ -33,7 +32,6 @@ class MRegression:
         return X_new @ self.beta
 
 class LinearRegression:
-    """Regressão Linear Simples (padrão aula)"""
     def __init__(self, x, y):
         self.x = x
         self.y = y
