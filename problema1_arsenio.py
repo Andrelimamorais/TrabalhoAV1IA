@@ -10,7 +10,7 @@ from scipy import stats
 
 # ==================== LEITURA DOS DADOS (np.loadtxt, padrão aula) ====================
 # Idade, Sexo, Uso_Beber, Uso_Cozinhar, Arsenio_Agua, Arsenio_Unhas
-dados = np.loadtxt("arsenio_dataset.csv", delimiter=",", skiprows=1)
+dados = np.loadtxt("arsenio_dataset (1).csv", delimiter=",", skiprows=1)
 print("Dados de entrada:\n", dados)
 
 X = dados[:, [0, 2, 3, 4]]   # Idade, Uso_Beber, Uso_Cozinhar, Arsenio_Agua
