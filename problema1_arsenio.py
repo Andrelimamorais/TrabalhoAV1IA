@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import stats
 
 dados = np.loadtxt("arsenio_dataset (1).csv", delimiter=",", skiprows=1)
 print("Dados de entrada:\n", dados)
@@ -123,12 +122,16 @@ axes[0].scatter(y_pred, residuos, color='steelblue', edgecolor='k')
 axes[0].axhline(0, color='red', linestyle='--')
 axes[0].set_xlabel('Valores Ajustados'); axes[0].set_ylabel('Resíduos e')
 axes[0].set_title('Resíduos vs Ajustados')
+
 axes[1].scatter(np.arange(1, N+1), residuos, color='darkorange', edgecolor='k')
 axes[1].axhline(0, color='red', linestyle='--')
 axes[1].set_xlabel('Observação i'); axes[1].set_ylabel('Resíduos e')
 axes[1].set_title('Resíduos vs Ordem')
-stats.probplot(residuos, dist="norm", plot=axes[2])
-axes[2].set_title('Q-Q Plot dos Resíduos')
+
+axes[2].hist(residuos, bins=6, color='mediumpurple', edgecolor='k')
+axes[2].set_title('Histograma dos Resíduos')
+axes[2].set_xlabel('Resíduos e'); axes[2].set_ylabel('Frequência')
+
 plt.tight_layout()
 plt.savefig('residuos_problema1.png', dpi=150, bbox_inches='tight')
 plt.show()
